@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manual do Usuário - Simulador de Paginação de Memória Virtual</title>
+    
+    <link rel="stylesheet" href="style.css" />
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' width='48' height='48'%3E%3Cstyle%3E:root%7B--icon-accent:%233182ce;--icon-muted:%23e2e8f0%7D@media(prefers-color-scheme:dark)%7B:root%7B--icon-accent:%2363b3ed;--icon-muted:%232d3748%7D%7D.accent%7Bfill:var(--icon-accent)%7D.muted%7Bfill:var(--icon-muted)%7D.arrow-stroke%7Bstroke:var(--icon-accent);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;fill:none%7D%3C/style%3E%3Crect x='4' y='8' width='12' height='8' rx='2' class='accent' opacity='0.4'/%3E%3Crect x='4' y='32' width='12' height='8' rx='2' class='accent' opacity='0.4'/%3E%3Crect x='4' y='20' width='12' height='8' rx='2' class='accent'/%3E%3Cpath d='M16 24 h8' class='arrow-stroke'/%3E%3Cpath d='M20 20 l4 4 l-4 4' class='arrow-stroke'/%3E%3Crect x='26' y='6' width='18' height='36' rx='3' class='muted'/%3E%3Crect x='28' y='8' width='14' height='6' rx='1.5' class='accent' opacity='0.8'/%3E%3Crect x='28' y='16' width='6' height='4' rx='1' class='accent' opacity='0.3'/%3E%3Crect x='36' y='16' width='6' height='4' rx='1' class='accent'/%3E%3Crect x='28' y='22' width='6' height='4' rx='1' class='accent' opacity='0.3'/%3E%3Crect x='36' y='22' width='6' height='4' rx='1' class='accent'/%3E%3Crect x='28' y='28' width='6' height='4' rx='1' class='accent' opacity='0.3'/%3E%3Crect x='36' y='28' width='6' height='4' rx='1' class='accent'/%3E%3Crect x='28' y='34' width='6' height='4' rx='1' class='accent' opacity='0.3'/%3E%3Crect x='36' y='34' width='6' height='4' rx='1' class='accent'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <header>
+    <h1>
+  <a href="index.html" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: inherit;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="header-icon">
+      <defs>
+        <style>
+          :root {
+            --icon-accent: #3182ce;
+            --icon-muted: #e2e8f0;
+          }
+          @media (prefers-color-scheme: dark) {
+            :root {
+              --icon-accent: #63b3ed;
+              --icon-muted: #2d3748;
+            }
+          }
+          .accent { fill: var(--icon-accent); }
+          .muted { fill: var(--icon-muted); }
+          .arrow-stroke { stroke: var(--icon-accent); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+        </style>
+      </defs>
+      <rect x="4" y="8" width="12" height="8" rx="2" class="accent" opacity="0.4" />
+      <rect x="4" y="32" width="12" height="8" rx="2" class="accent" opacity="0.4" />
+      <rect x="4" y="20" width="12" height="8" rx="2" class="accent" />
+      <path d="M16 24 h8" class="arrow-stroke" />
+      <path d="M20 20 l4 4 l-4 4" class="arrow-stroke" />
+      <rect x="26" y="6" width="18" height="36" rx="3" class="muted" />
+      <rect x="28" y="8" width="14" height="6" rx="1.5" class="accent" opacity="0.8" />
+      <rect x="28" y="16" width="6" height="4" rx="1" class="accent" opacity="0.3" /> 
+      <rect x="36" y="16" width="6" height="4" rx="1" class="accent" />
+      <rect x="28" y="22" width="6" height="4" rx="1" class="accent" opacity="0.3" /> 
+      <rect x="36" y="22" width="6" height="4" rx="1" class="accent" />
+      <rect x="28" y="28" width="6" height="4" rx="1" class="accent" opacity="0.3" /> 
+      <rect x="36" y="28" width="6" height="4" rx="1" class="accent" />
+      <rect x="28" y="34" width="6" height="4" rx="1" class="accent" opacity="0.3" /> 
+      <rect x="36" y="34" width="6" height="4" rx="1" class="accent" />
+    </svg>
+    Simulador de Paginação de Memória Virtual
+  </a>
+</h1>
+      <div class="theme-toggle-container">
+        <a href="index.html" class="btn-theme" title="Voltar ao Simulador">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+        </a>
+
+        <button class="btn btn-theme" id="themeToggleBtn" onclick="toggleTheme()" title="Alternar Tema">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="manual-layout">
+      <h2 class="manual-title" style="text-align: center">Manual do Usuário</h2>
+    
+      <div class="card">
+        <h2>1. O que é este simulador?</h2>
+        <p>Este simulador foi desenvolvido como uma ferramenta didática e interativa para facilitar a compreensão do conceito de Gerenciamento de Memória, com foco na técnica de Paginação, um dos principais mecanismos utilizados pelos sistemas operacionais modernos.</p>
+        <p>O objetivo é transformar conceitos teóricos em uma experiência prática, permitindo que o usuário visualize o funcionamento do gerenciamento de memória de forma simples, dinâmica e intuitiva.</p>
+        <p>Durante a execução de um programa, o sistema operacional precisa administrar a memória RAM de maneira eficiente. Entretanto, nem sempre existe um espaço contínuo disponível para armazenar todo o processo. A paginação resolve esse problema dividindo o processo em blocos de tamanho fixo, chamados páginas, que podem ser distribuídos em diferentes posições da memória física, conhecidas como quadros (frames).</p>
+        <p>Este simulador reproduz, de forma simplificada, o funcionamento de uma MMU (Memory Management Unit), responsável por traduzir os endereços lógicos utilizados pelos programas em endereços físicos da memória. Assim, é possível acompanhar passo a passo como ocorre a organização e o acesso aos dados.</p>
+      </div>
+
+      <div class="card">
+        <h2>2. Objetivo do sistema</h2>
+        <p>O sistema tem como finalidade auxiliar estudantes e professores no aprendizado do gerenciamento de memória por paginação, oferecendo uma representação visual do processo de alocação de páginas, tradução de endereços e ocupação da memória física.</p>
+        <p>Por meio das simulações, o usuário pode compreender conceitos importantes de Sistemas Operacionais de forma mais clara e intuitiva.</p>
+      </div>
+
+      <div class="card">
+        <h2>3. Como funciona a paginação?</h2>
+        <p>Na técnica de paginação, a memória lógica de um processo é dividida em pequenas partes chamadas páginas, todas com o mesmo tamanho.</p>
+        <p>A memória física também é dividida em blocos de tamanho igual, chamados quadros ou frames.</p>
+        <p>Quando um processo é carregado, suas páginas são distribuídas entre os quadros disponíveis, não sendo necessário que fiquem armazenadas em posições consecutivas. Isso reduz problemas de fragmentação externa e melhora o aproveitamento da memória.</p>
+      </div>
+
+      <div class="card">
+        <h2>4. Funcionalidades do Simulador</h2>
+        <p>O simulador oferece uma experiência prática e visual para entender os mecanismos de paginação, permitindo:</p>
+        <ul>
+          <li><strong>Configuração Personalizada da Arquitetura:</strong> Definir manualmente os tamanhos da página, da memória lógica e da memória física em bytes.</li>
+          <li><strong>Cálculo Automático de Bits:</strong> Visualizar instantaneamente quantos bits são necessários para indexar as páginas <span class="highlight-p">(p)</span> e quantos representam o deslocamento <span class="highlight-d">(d)</span>.</li>
+          <li><strong>Geração Aleatória (Randomizar Valores):</strong> Preencher os tamanhos do sistema e a tabela de páginas com valores válidos e coerentes de forma automática para testes rápidos.</li>
+          <li><strong>Mapeamento Interativo de Quadros:</strong> Preencher ou alterar os números dos quadros físicos <span class="highlight-f">(f)</span> na tabela para simular mapeamentos reais ou deixar campos em branco para testar o comportamento de <em>Page Fault</em> (Falta de Página).</li>
+          <li><strong>Tradução de Endereços em Tempo Real:</strong> Inserir um endereço lógico decimal e acompanhar graficamente a sua decomposição e conversão para endereço físico.</li>
+          <li><strong>Detalhamento Matemático e de Bits:</strong> Analisar o passo a passo completo da conversão binária, divisão de blocos, identificação de componentes e a aplicação da fórmula clássica de conversão de memória.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>5. Como Utilizar o Sistema</h2>
+        <p>Siga o fluxo lógico do painel para realizar as suas simulações e experimentos:</p>
+        <ol>
+          <li><strong>Passo 1: Configurar a Estrutura</strong>
+            <ul>
+              <li>Digite os tamanhos desejados para a Página, Memória Lógica e Memória Física (sempre em potências de 2 para o funcionamento correto) e clique em "Aplicar e Reiniciar".</li>
+              <li>Alternativa rápida: Clique em "Randomizar Valores" para que o sistema gere uma combinação coerente e preencha a tabela de páginas automaticamente para você.</li>
+            </ul>
+          </li>
+          <li><strong>Passo 2: Mapear a Tabela de Páginas</strong>
+            <ul>
+              <li>Observe a divisão do endereço gerada: distribuição de bits de <span class="highlight-p">(p)</span> e <span class="highlight-d">(d)</span>.</li>
+              <li>Na tabela abaixo, insira em cada linha qual Quadro Físico <span class="highlight-f">(f)</span> corresponde àquela página lógica. O sistema indica o limite válido com um placeholder (ex: <code>Ex.: 0-3</code>).</li>
+            </ul>
+          </li>
+          <li><strong>Passo 3: Traduzir um Endereço</strong>
+            <ul>
+              <li>No campo "Endereço Lógico Decimal", digite o endereço que deseja testar (dentro do limite máximo da sua memória lógica configurada).</li>
+              <li>Clique no botão "Traduzir".</li>
+            </ul>
+          </li>
+          <li><strong>Passo 4: Analisar o Fluxo Visual e os Resultados</strong>
+            <ul>
+              <li>Role a página para baixo para inspecionar o "Fluxo Visual da Tradução de Endereço", que mostra graficamente as caixas de <span class="highlight-p">(p)</span> e <span class="highlight-d">(d)</span> buscando o quadro e gerando o endereço físico final.</li>
+              <li>Estude a seção de "Resultado da Tradução Matemática e de Bits" para conferir as contas exatas da divisão inteira, resto, representação binária e a fórmula de mapeamento executada pela CPU.</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <h2>6. Entendendo a interface</h2>
+        <p>A interface foi projetada para facilitar a visualização dos conceitos apresentados.</p>
+        <p>Nela, o usuário encontrará áreas destinadas à configuração da simulação, à exibição dos processos criados, à representação da memória física e às informações referentes à tradução de endereços.</p>
+        <p>Cada elemento foi organizado para proporcionar uma experiência de aprendizado simples e intuitiva.</p>
+      </div>
+
+      <div class="card">
+        <h2>7. Conceitos importantes</h2>
+        <ul>
+          <li><strong>Processo:</strong> programa em execução que necessita de espaço na memória.</li>
+          <li><strong>Página:</strong> bloco de tamanho fixo em que o processo é dividido.</li>
+          <li><strong>Quadro (Frame):</strong> bloco da memória física destinado ao armazenamento das páginas.</li>
+          <li><strong>Endereço lógico:</strong> endereço gerado pelo programa durante sua execução.</li>
+          <li><strong>Endereço físico:</strong> localização real do dado na memória RAM.</li>
+          <li><strong>MMU (Memory Management Unit):</strong> unidade responsável por converter endereços lógicos em endereços físicos.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>8. Considerações finais</h2>
+        <p>Este simulador foi desenvolvido com fins educacionais, buscando tornar mais acessíveis os conceitos relacionados ao gerenciamento de memória por paginação.</p>
+        <p>Ao explorar suas funcionalidades, o usuário poderá compreender de maneira prática como os sistemas operacionais organizam a memória e realizam a tradução de endereços, consolidando conhecimentos fundamentais para o estudo da disciplina de Sistemas Operacionais.</p>
+      </div>
+
+      <div class="card" style="text-align: center; border-left: 5px solid var(--btn-bg)">
+        <h3 style="margin-top: 0">Projeto de Sistemas Operacionais - UFERSA Pau dos Ferros</h3>
+        <p><strong>Desenvolvedores:</strong></p>
+        <ul style="list-style: none; padding: 0; margin: 10px 0">
+          <li>Izadora Louyza Silva Figueiredo</li>
+          <li>Lívian Maria Lucena Gomes Pinheiro</li>
+          <li>Maria Vitória Fernandes Rocha</li>
+          <li>Victor Hugo de Oliveira</li>
+        </ul>
+        <p style="font-size: 0.85rem; color: var(--text-muted)">
+          Desenvolvido como requisito da disciplina de Sistemas Operacionais na UFERSA, Campus Pau dos Ferros.
+        </p>
+      </div>
+    </main>
+
+    <script>
+      const isDark = localStorage.getItem("dark-mode") === "true";
+      if (isDark) {
+        document.body.classList.add("dark-mode");
+        updateButtonIcon(true);
+      } else {
+        updateButtonIcon(false);
+      }
+
+      function toggleTheme() {
+        const body = document.body;
+        body.classList.toggle("dark-mode");
+        const isNowDark = body.classList.contains("dark-mode");
+        localStorage.setItem("dark-mode", isNowDark);
+        updateButtonIcon(isNowDark);
+      }
+
+      function updateButtonIcon(isDark) {
+        const btn = document.getElementById("themeToggleBtn");
+        if (!btn) return;
+        if (isDark) {
+          btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" /></svg>';
+        } else {
+          btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" /></svg>';
+        }
+      }
+    </script>
+
+    <footer>
+      <p>
+        &copy; 2026 Simulador de Paginação de Memória Virtual - Desenvolvido para fins
+        educacionais.
+      </p>
+      <div class="footer-links">
+        <a href="index.html">Simulador</a>
+        <span>|</span>
+        <a target="_blank" href="https://github.com/izalouyza/SimuladorMemoria"
+          ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M237.9 461.4C237.9 463.4 235.6 465 232.7 465C229.4 465.3 227.1 463.7 227.1 461.4C227.1 459.4 229.4 457.8 232.3 457.8C235.3 457.5 237.9 459.1 237.9 461.4zM206.8 456.9C206.1 458.9 208.1 461.2 211.1 461.8C213.7 462.8 216.7 461.8 217.3 459.8C217.9 457.8 216 455.5 213 454.6C210.4 453.9 207.5 454.9 206.8 456.9zM251 455.2C248.1 455.9 246.1 457.8 246.4 460.1C246.7 462.1 249.3 463.4 252.3 462.7C255.2 462 257.2 460.1 256.9 458.1C256.6 456.2 253.9 454.9 251 455.2zM316.8 72C178.1 72 72 177.3 72 316C72 426.9 141.8 521.8 241.5 555.2C254.3 557.5 258.8 549.6 258.8 543.1C258.8 536.9 258.5 502.7 258.5 481.7C258.5 481.7 188.5 496.7 173.8 451.9C173.8 451.9 162.4 422.8 146 415.3C146 415.3 123.1 399.6 147.6 399.9C147.6 399.9 172.5 401.9 186.2 425.7C208.1 464.3 244.8 453.2 259.1 446.6C261.4 430.6 267.9 419.5 275.1 412.9C219.2 406.7 162.8 398.6 162.8 302.4C162.8 274.9 170.4 261.1 186.4 243.5C183.8 237 175.3 210.2 189 175.6C209.9 169.1 258 202.6 258 202.6C278 197 299.5 194.1 320.8 194.1C342.1 194.1 363.6 197 383.6 202.6C383.6 202.6 431.7 169 452.6 175.6C466.3 210.3 457.8 237 455.2 243.5C471.2 261.2 481 275 481 302.4C481 398.9 422.1 406.6 366.2 412.9C375.4 420.8 383.2 435.8 383.2 459.3C383.2 493 382.9 534.7 382.9 542.9C382.9 549.4 387.5 557.3 400.2 555C500.2 521.8 568 426.9 568 316C568 177.3 455.5 72 316.8 72zM169.2 416.9C167.9 417.9 168.2 420.2 169.9 422.1C171.5 423.7 173.8 424.4 175.1 423.1C176.4 422.1 176.1 419.8 174.4 417.9C172.8 416.3 170.5 415.6 169.2 416.9zM158.4 408.8C157.7 410.1 158.7 411.7 160.7 412.7C162.3 413.7 164.3 413.4 165 412C165.7 410.7 164.7 409.1 162.7 408.1C160.7 407.5 159.1 407.8 158.4 408.8zM190.8 444.4C189.2 445.7 189.8 448.7 192.1 450.6C194.4 452.9 197.3 453.2 198.6 451.6C199.9 450.3 199.3 447.3 197.3 445.4C195.1 443.1 192.1 442.8 190.8 444.4zM179.4 429.7C177.8 430.7 177.8 433.3 179.4 435.6C181 437.9 183.7 438.9 185 437.9C186.6 436.6 186.6 434 185 431.7C183.6 429.4 181 428.4 179.4 429.7z"/></svg></a
+        >
+      </div>
+    </footer>
+  </body>
+</html>
